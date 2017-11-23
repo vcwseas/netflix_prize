@@ -1,3 +1,6 @@
 *.npz
 userid_indicies_mapping
 .env/
+__pycache__/
+dev_indicies
+training_indicies

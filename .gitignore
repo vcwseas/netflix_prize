@@ -1,1 +1,3 @@
 *.npz
+userid_indicies_mapping
+.env/

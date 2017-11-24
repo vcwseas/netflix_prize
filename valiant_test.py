@@ -2,21 +2,32 @@ import numpy as np
 from cvxpy import *
 from scipy.misc import comb
 
-def generate_dataset(p = 0.4, t = 2, size = 1000):
+def generate_dataset(p = 0.5, t = 2, size = 1000):
     '''
-    Generates an array of data where p's are close to 0.5.
+    Generates an array of binomial data with t trials and with prob success p.
+    Size is the number of samples to draw. 
     '''
-    return np.random.binomial(n = t, p = p, size = size)
+    noise = []
+    num_noise = size
+    factor = 3
+    mean = 1/(factor * 2)
+    for i in range(num_noise):
+        noise.append(np.random.uniform()/factor - mean)
 
+    dataset = []
+    for i in range(len(noise)):
+        dataset.append(np.random.binomial(n = t, p = p + noise[i], size = int(size / num_noise)))
+
+    return np.reshape(np.array(dataset), (-1, ))
 
 if __name__ == "__main__":
 
     #Set up for generating dataset
     np.random.seed(123)
-    t = 3 #number of trials observe of each example
+    t = 2 #number of trials observed of each example
     m = 100 #size of the epsilon net
-    p = 0.324 #underlying latent prob
-    size = 1000 #number of data points
+    p = 0.8 #underlying latent prob
+    size = 100 #number of data points
     dataset = generate_dataset(t = t, p = p, size = size)
     n = dataset.shape[0]
 

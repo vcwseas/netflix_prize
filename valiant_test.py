@@ -1,6 +1,7 @@
 import numpy as np
 from cvxpy import *
 from scipy.misc import comb
+from matplotlib import pyplot as plt
 
 def generate_dataset(p = 0.5, t = 2, size = 1000):
     '''
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     np.random.seed(123)
     t = 2 #number of trials observed of each example
     m = 100 #size of the epsilon net
-    p = 0.8 #underlying latent prob
+    p = 0.459 #underlying latent prob
     size = 100 #number of data points
     dataset = generate_dataset(t = t, p = p, size = size)
     n = dataset.shape[0]
@@ -51,14 +52,25 @@ if __name__ == "__main__":
     beta_hat = bmat(beta_hat)
 
     #Quadratic Objective
-    # objective = Minimize(sum_entries(power(beta_hat - beta_ks, 2)))
+    objective = Minimize(sum_entries(power(beta_hat - beta_ks, 2)))
     #Linear Objective
-    objective = Minimize(sum_entries(abs(beta_hat - beta_ks)))
+    # objective = Minimize(sum_entries(abs(beta_hat - beta_ks)))
     constraints = [x >= 0, sum_entries(x) == 1]
     prob = Problem(objective, constraints)
     result = prob.solve()
 
     soln = np.array(x.value)
+    running_sum = [0]
+    for i in range(len(soln)):
+        running_sum.append(running_sum[i] + soln[i])
+
+    plt.figure()
+    plt.plot(range(len(running_sum)), running_sum)
+    plt.show()
+
+
+
+
     print(soln)
     print(np.argmax(soln)/m)
 

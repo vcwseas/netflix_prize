@@ -79,12 +79,25 @@ def create_partition():
 
 
 def load_partitions():
+    '''
+    Note that partitions are in movie by user format. 
+    That is, each row is the ratings given to a movie by each user.
+    '''
     train_partiton = sparse.load_npz("train_partiton.npz")
     dev_partition = sparse.load_npz("dev_partition.npz")
     test_partition = sparse.load_npz("test_partition.npz")
 
     return train_partiton, dev_partition, test_partition
 
+def valiant_preprocessing(dataset, threshold = 3):
+    '''
+    Convert ratings from 0-5 to 0, 1 with discretization. 
+    Everything strictly greater than the threshold is a 1. 
+    Everything below and including the threshold is a 0.
+    '''
+    dataset[dataset < threshold + 1] = 0 #< comparison is inefficient?
+    dataset[dataset > threshold] = 1
+    return dataset
             
 if __name__ == '__main__':
     data_matrix, userid_indicies_mapping = load_ratings()

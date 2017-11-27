@@ -68,9 +68,6 @@ if __name__ == "__main__":
     plt.plot(range(len(running_sum)), running_sum)
     plt.show()
 
-
-
-
     print(soln)
     print(np.argmax(soln)/m)
 

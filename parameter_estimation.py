@@ -2,18 +2,18 @@ from scipy import sparse
 import numpy as np
 from scipy.misc import comb
 from cvxpy import *
-from data_loader import load_partitions, valiant_preprocessing
+from data_loader import load_dataset, valiant_preprocessing
 from matplotlib import pyplot as plt
 
 
 
-def estimate_parameters(data_matrix, csr_data, threshold = 100, by_movie = True):
+def estimate_parameters(data_matrix, csr_data, threshold = 100):
     '''
     Return an array of latent parameters for 0/1 under
     descritized setting. 
     Arg:
-    data_matrix numpy array after discretizing and summing over axis. 
-    csr_data is the full discretized data. Needed for MLE to get # observations.
+        data_matrix numpy array after discretizing and summing over axis. 
+        csr_data is the full discretized data. Needed for MLE to get # observations.
     '''
     #Reshape from [X, 1] to (X)
     data_matrix = np.reshape(data_matrix, data_matrix.shape[0])
@@ -103,11 +103,6 @@ def mle_estimation(mle_matrix, mle_indices, non_zero_elements_array):
     '''
     print("Maximum Likelihood Estimation for Priors")
 
-    #To store number of observations per row (user/movie)
-    non_zero_elements_array = np.zeros(csr_data.shape[0])
-    for i in range(csr_data.shape[0]):
-        non_zero_elements_array[i] = csr_data[i].indices.size
-
     #need to recast [X, 1] to (X, )
     mle_indices = np.reshape(mle_indices, mle_indices.shape[0])
 
@@ -122,9 +117,27 @@ def mle_estimation(mle_matrix, mle_indices, non_zero_elements_array):
 
     return parameters
 
+def load_priors():
+    '''
+    Load prior data from .npz files.
+    '''
+    movie_priors = np.load("movie_priors")
+    user_priors = np.load("user_priors")
+    return movie_priors, user_priors
 
+def create_priors():
+    '''
+    Create priors for full dataset. 
+    '''
+    data = load_dataset()
+    data_matrix_movie, data_matrix_user, discretized_csr_data= valiant_preprocessing(data)
+    movie_priors = estimate_parameters(data_matrix_movie, discretized_csr_data)
+    with open("movie_priors", "wb") as file:
+        np.save(file, movie_priors)
+    user_priors = estimate_parameters(data_matrix_user, discretized_csr_data.transpose())
+    with open("user_priors", "wb") as file:
+        np.save(file, user_priors)
+    return 
 
 if __name__ == "__main__":
-    a,_,_ = load_partitions()
-    data_matrix, _, csr_data= valiant_preprocessing(a)
-    print(estimate_parameters(data_matrix, csr_data))
+    create_priors()

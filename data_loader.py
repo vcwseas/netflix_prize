@@ -40,6 +40,13 @@ def load_ratings():
     data_matrix = data_matrix.tocsr(copy = False)
     return  data_matrix, userid_indicies_mapping
 
+def load_dataset():
+    '''
+    Return the full CSR Dataset
+    '''
+    data_matrix = sparse.load_npz("data_matrix.npz")
+    return data_matrix
+
 def create_partition():
 
     #Load data
@@ -75,7 +82,6 @@ def create_partition():
     print("Created Partitions and dumped to Hard Disk!")
 
     return
-
 
 def load_partitions():
     '''

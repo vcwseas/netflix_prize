@@ -106,6 +106,6 @@ if __name__ == '__main__':
     sparse.save_npz("data_matrix", data_matrix)
     pickle.dump(userid_indicies_mapping, open("userid_indicies_mapping", "wb"))
     print("Loaded Data into Sparse CSR Matrix; Loaded User IDs into bijective mapping with indicies in Matrix; Dumped!")
-    create_partition()
+    # create_partition()
 
 

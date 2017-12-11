@@ -26,7 +26,6 @@ def load_ratings():
                         userid = np.int32(row[0].strip())
                         rating = np.int8(row[1].strip())
                         if userid in userid_indicies_mapping:
-                            continue
                             data_matrix[movieid, userid_indicies_mapping[userid]] = rating
                         else:
                             userid_indicies_mapping[userid] = index

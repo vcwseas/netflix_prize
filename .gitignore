@@ -4,3 +4,5 @@ userid_indicies_mapping
 __pycache__/
 dev_indicies
 training_indicies
+.ipynb_checkpoints/
+*ipynb

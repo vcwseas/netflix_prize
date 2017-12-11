@@ -26,7 +26,6 @@ def load_ratings():
                         userid = np.int32(row[0].strip())
                         rating = np.int8(row[1].strip())
                         if userid in userid_indicies_mapping:
-                            continue
                             data_matrix[movieid, userid_indicies_mapping[userid]] = rating
                         else:
                             userid_indicies_mapping[userid] = index
@@ -95,9 +94,12 @@ def valiant_preprocessing(dataset, threshold = 3):
     Everything strictly greater than the threshold is a 1. 
     Everything below and including the threshold is a 0.
     '''
-    dataset[dataset < threshold + 1] = 0 #< comparison is inefficient?
-    dataset[dataset > threshold] = 1
-    return dataset
+    discretized_data = dataset
+    discretized_data.data[discretized_data.data <= threshold] = 0
+    discretized_data.data[discretized_data.data > threshold] = 1
+    discretized_by_movie = discretized_data.sum(axis = 1, dtype = np.uint32)
+    discretized_by_user = discretized_data.sum(axis = 0, dtype = np.uint16)
+    return np.array(discretized_by_movie, copy = True), np.array(discretized_by_user.transpose(), copy = True), discretized_data
             
 if __name__ == '__main__':
     data_matrix, userid_indicies_mapping = load_ratings()

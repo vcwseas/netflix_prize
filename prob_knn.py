@@ -33,12 +33,13 @@ def predict(csr_data, movie_priors, user_priors, sample_size = 1000):
     '''
     Sample a sample_size number of datapoints from the discretized dataset
     Run classifier based on priors. 
-    Return a vector of predictions (0,1) and the true labels
+    Return a vector of predictions (0,1) and the true labels and the scores
     '''
     l = []
     y = np.zeros(sample_size)
     n = csr_data.shape[0]
     y_hat = np.zeros(sample_size)
+    scores = np.zeros(sample_size)
 
     for i in range(sample_size):
         row = np.random.randint(n)
@@ -47,9 +48,9 @@ def predict(csr_data, movie_priors, user_priors, sample_size = 1000):
         y[i] = csr_data[row, column]
 
     for i in range(sample_size):
-        y_hat[i] = predict_(l[i][0], l[i][1], movie_priors, user_priors)
+        y_hat[i], scores[i] = predict_(l[i][0], l[i][1], movie_priors, user_priors)
 
-    return y_hat, y
+    return y_hat, y, scores
 
 def predict_(movie, user, movie_priors, user_priors):
     '''
@@ -77,6 +78,7 @@ def predict_(movie, user, movie_priors, user_priors):
 
     soln = np.argmax(theta)
     retval = 0
+    score = 0
 
     #MAP logic
     if soln == 3:
@@ -94,7 +96,7 @@ def predict_(movie, user, movie_priors, user_priors):
                 retval = 0
             else:
                 retval = 1
-    return retval
+    return retval, theta[soln]
 
 
 def calculate_metrics(y_true, y_pred):
@@ -120,7 +122,7 @@ if __name__ == "__main__":
     for i in range(len(user_thresholds)):
         for j in range(len(movie_thresholds)):
             movie_priors, user_priors = load_priors("movie_priors"+str(movie_thresholds[j]), "user_priors"+str(user_thresholds[i]))
-            y_pred, y_true = predict(discretized_csr_data, movie_priors, user_priors)
+            y_pred, y_true, y_score = predict(discretized_csr_data, movie_priors, user_priors)
             print("Movie Threshold: {0}, User Threshold: {1}".format(movie_thresholds[j], user_thresholds[i]))
             print(confusion_matrix(y_true, y_pred))
             acc, prec, recall, f1 = calculate_metrics(y_true, y_pred)

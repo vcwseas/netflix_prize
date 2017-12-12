@@ -145,7 +145,7 @@ def create_priors(m_threshold = 50, u_threshold = 10):
     return movie_solution, user_solution
 
 
-def plot_cdfs(matrix, thresholds, title = "Recovered CDFs"):
+def plot_cdfs(matrix, thresholds, title = "Recovered CDFs", filename = "CDF.svg"):
     '''
     Plotting logic for multiple thresholds
     '''
@@ -160,7 +160,7 @@ def plot_cdfs(matrix, thresholds, title = "Recovered CDFs"):
     plt.xlabel("Cumulative Distribution Function")
     plt.title(title)
     plt.legend()
-    plt.show()
+    plt.savefig(filename)
 
 if __name__ == "__main__":
 
@@ -173,5 +173,5 @@ if __name__ == "__main__":
         movie_solution, user_solution = create_priors(mt[i], ut[i])
         ml.append(movie_solution)
         ul.append(user_solution)
-    # plot_cdfs(ml, mt, title = "Recovered CDFs for Movies' Latent Priors")
-    plot_cdfs(ul, ut, title = "Recovered CDFs for Users' Latent Priors")
+    plot_cdfs(ml, mt, title = "Recovered CDFs for Movies' Latent Priors", filename = "CDF_movies.svg")
+    plot_cdfs(ul, ut, title = "Recovered CDFs for Users' Latent Priors", filename = "CDF_users.svg")

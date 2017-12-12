@@ -48,7 +48,6 @@ freq = sp.stats.itemfreq(user_index)
 users = user_index[freq[:, 1].argsort()]
 users = users[0:100]
 
-
 k = 100
 nn, nn_distances = KNN(k, dataset_n, users)
 np.savetxt("KNN_matrix", nn, fmt='%d')

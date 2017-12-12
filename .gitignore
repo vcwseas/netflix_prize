@@ -8,5 +8,5 @@ training_indicies
 *ipynb
 KNN_distances
 KNN_matrix
-movie_priors
-user_priors
+movie_priors*
+user_priors*

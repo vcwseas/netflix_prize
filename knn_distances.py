@@ -127,7 +127,6 @@ print(data_test_set_hat)
 
 
 
-
 def find_test_scores(training, user, test_movies):
 
     user_movies = training[user]

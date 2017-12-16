@@ -11,13 +11,13 @@ def KNN(k, dataset, users):
     nearest_neighbors = np.zeros([dataset.shape[0], k])
     distances = np.zeros([dataset.shape[0], k])
 
-
+    i = 0
     for user in users:
         user_movies = dataset[user]
         user_movies_indices = user_movies.indices
         neighbor_data = dataset[:, user_movies_indices]
         distance_i = np.zeros([dataset.shape[0]])
-        print(user)
+        print(i)
 
         j = 0
         for neighbor in range(0, dataset.shape[0]-1):
@@ -36,6 +36,7 @@ def KNN(k, dataset, users):
         top_distances = distance_i[top_neighbors]
         nearest_neighbors[user, :] = top_neighbors[0:k]
         distances[user, :] = top_distances[0:k]
+        i = i + 1
 
     return nearest_neighbors, distances
 
